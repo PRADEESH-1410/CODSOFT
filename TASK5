@@ -1,0 +1,115 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+// Course class to store course information
+class Course {
+    String courseCode;
+    String title;
+    String description;
+    int capacity;
+    int registeredStudents;
+
+    public Course(String courseCode, String title, String description, int capacity) {
+        this.courseCode = courseCode;
+        this.title = title;
+        this.description = description;
+        this.capacity = capacity;
+        this.registeredStudents = 0;
+    }
+
+    // Method to check if the course has available slots
+    public boolean isAvailable() {
+        return registeredStudents < capacity;
+    }
+
+    // Method to register a student for the course
+    public void registerStudent() {
+        if (isAvailable()) {
+            registeredStudents++;
+            System.out.println("You have successfully registered for " + title);
+        } else {
+            System.out.println("Sorry, this course is full.");
+        }
+    }
+
+    // Method to remove a student from the course
+    public void removeStudent() {
+        if (registeredStudents > 0) {
+            registeredStudents--;
+            System.out.println("You have successfully dropped the course " + title);
+        } else {
+            System.out.println("You are not registered for this course.");
+        }
+    }
+
+    // Display course details
+    public void displayCourseDetails() {
+        System.out.println(courseCode + " - " + title);
+        System.out.println("Description: " + description);
+        System.out.println("Available Slots: " + (capacity - registeredStudents));
+        System.out.println("Schedule: " + "Mon, Wed, Fri - 10:00 AM");
+    }
+}
+
+// Student class to store student information
+class Student {
+    String studentID;
+    String name;
+    ArrayList<Course> registeredCourses;
+
+    public Student(String studentID, String name) {
+        this.studentID = studentID;
+        this.name = name;
+        this.registeredCourses = new ArrayList<>();
+    }
+
+    // Method to register for a course
+    public void registerForCourse(Course course) {
+        if (!registeredCourses.contains(course)) {
+            course.registerStudent();
+            if (course.isAvailable()) {
+                registeredCourses.add(course);
+            }
+        } else {
+            System.out.println("You are already registered for this course.");
+        }
+    }
+
+    // Method to drop a course
+    public void dropCourse(Course course) {
+        if (registeredCourses.contains(course)) {
+            course.removeStudent();
+            registeredCourses.remove(course);
+        } else {
+            System.out.println("You are not registered for this course.");
+        }
+    }
+
+    // Method to view registered courses
+    public void viewRegisteredCourses() {
+        if (registeredCourses.isEmpty()) {
+            System.out.println("You are not registered for any courses.");
+        } else {
+            System.out.println("Registered Courses for " + name + ":");
+            for (Course course : registeredCourses) {
+                System.out.println(course.courseCode + " - " + course.title);
+            }
+        }
+    }
+}
+
+// Main class to run the registration system
+public class CourseRegistrationSystem {
+
+    public static void main(String[] args) {
+        // Creating course objects
+        Course course1 = new Course("CS101", "Intro to Computer Science", "Learn the basics of computer science.", 3);
+        Course course2 = new Course("MA102", "Calculus I", "Introduction to Calculus.", 2);
+        Course course3 = new Course("PH103", "Physics I", "Learn about the fundamentals of physics.", 3);
+
+        // Creating student objects
+        Student student1 = new Student("S001", "Alice");
+        Student student2 = new Student("S002", "Bob");
+
+        // Creating course list
+        ArrayList<Course> …
