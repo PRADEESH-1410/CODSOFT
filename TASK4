@@ -1,0 +1,83 @@
+import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
+
+class Question {
+    String question;
+    String[] options;
+    String correctAnswer;
+
+    public Question(String question, String[] options, String correctAnswer) {
+        this.question = question;
+        this.options = options;
+        this.correctAnswer = correctAnswer;
+    }
+}
+
+public class QuizApp {
+    private static final int TIME_LIMIT = 10; // Time limit per question in seconds
+    private static int score = 0;
+    private static int totalQuestions = 0;
+
+    public static void main(String[] args) {
+        Question[] questions = {
+            new Question("What is the capital of France?", new String[]{"A. Berlin", "B. Madrid", "C. Paris", "D. Rome"}, "C. Paris"),
+            new Question("Which language is primarily used for Android development?", new String[]{"A. Python", "B. Java", "C. C++", "D. Ruby"}, "B. Java"),
+            new Question("Who wrote 'To Kill a Mockingbird'?", new String[]{"A. Harper Lee", "B. J.K. Rowling", "C. Ernest Hemingway", "D. Mark Twain"}, "A. Harper Lee")
+        };
+
+        Scanner scanner = new Scanner(System.in);
+
+        for (Question q : questions) {
+            totalQuestions++;
+            boolean answeredCorrectly = askQuestion(q, scanner);
+            if (answeredCorrectly) {
+                score++;
+            }
+        }
+
+        displayResults();
+    }
+
+    private static boolean askQuestion(Question question, Scanner scanner) {
+        System.out.println("\nQuestion " + totalQuestions + ": " + question.question);
+        for (String option : question.options) {
+            System.out.println(option);
+        }
+
+        final boolean[] answered = {false};
+        final boolean[] isCorrect = {false};
+        
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (!answered[0]) {
+                    System.out.println("\nTime's up! The correct answer was: " + question.correctAnswer);
+                    answered[0] = true; // Stop further input after time's up
+                }
+            }
+        }, TIME_LIMIT * 1000); // Set timer for TIME_LIMIT seconds
+
+        System.out.print("Your answer (e.g., A, B, C, D): ");
+        String answer = scanner.nextLine().toUpperCase();
+        
+        // Check if the answer is correct within the time limit
+        if (!answered[0]) {
+            answered[0] = true;
+            if (answer.equals(question.correctAnswer)) {
+                isCorrect[0] = true;
+                System.out.println("Correct!");
+            } else {
+                System.out.println("Incorrect! The correct answer was: " + question.correctAnswer);
+            }
+        }
+        
+        return isCorrect[0];
+    }
+
+    private static void displayResults() {
+        System.out.println("\nQuiz Finished!");
+        System.out.println("Your score: " + score + "/" + totalQuestions);
+    }
+}
